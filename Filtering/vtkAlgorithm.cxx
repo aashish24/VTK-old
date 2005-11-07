@@ -394,6 +394,18 @@ int vtkAlgorithm::ProcessRequest(vtkInformation* /* request */,
 }
 
 //----------------------------------------------------------------------------
+int vtkAlgorithm::ComputePipelineMTime(vtkInformation* /* request */,
+                                       vtkInformationVector**,
+                                       vtkInformationVector*,
+                                       int /* requestFromOutputPort */,
+                                       unsigned long* mtime)
+{
+  // By default algorithms contribute only their own modified time.
+  *mtime = this->GetMTime();
+  return 1;
+}
+
+//----------------------------------------------------------------------------
 int vtkAlgorithm::GetNumberOfInputPorts()
 {
   return this->InputPortInformation->GetNumberOfInformationObjects();
