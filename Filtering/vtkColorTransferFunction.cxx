@@ -118,7 +118,7 @@ int vtkColorTransferFunction::AddRGBPoint( double x, double r,
       }
     if ( i < this->NumberOfPoints )
       {
-      memcpy( tmp+i+1, this->Function+i, 
+      memcpy( tmp+((i+1)*4), this->Function+(i*4), 
               (this->NumberOfPoints-i)*sizeof(double)*4 );
       }
     if ( this->Function )
