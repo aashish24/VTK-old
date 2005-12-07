@@ -1068,6 +1068,12 @@ int vtkCompositeDataPipeline::ForwardUpstream(
     {
     return 1;
     }
+
+  if (!this->Algorithm->ModifyRequest(request, BeforeForward))
+    {
+    return 0;
+    }
+
   int result = 1;
   if(vtkExecutive* e = this->GetInputExecutive(i, j))
     {
@@ -1082,6 +1088,12 @@ int vtkCompositeDataPipeline::ForwardUpstream(
       }
     request->Set(FROM_OUTPUT_PORT(), port);
     }
+
+  if (!this->Algorithm->ModifyRequest(request, AfterForward))
+    {
+    return 0;
+    }
+
   return result;
 }
 
