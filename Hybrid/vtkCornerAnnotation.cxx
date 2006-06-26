@@ -131,7 +131,7 @@ void vtkCornerAnnotation::TextReplace(vtkImageActor *ia,
   if (ia)
     {
     slice = ia->GetSliceNumber() + 1;
-    slice_max = ia->GetSliceNumberMax() + 1;
+    slice_max = ia->GetWholeZMax() + 1;
     ia_input = ia->GetInput();
     if (!wl_input && ia_input)
       {
