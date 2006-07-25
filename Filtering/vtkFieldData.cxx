@@ -471,7 +471,7 @@ int vtkFieldData::GetArrayContainingComponent(int i, int& arrayComp)
     if ( this->Data[j] != NULL )
       {
       numComp = this->Data[j]->GetNumberOfComponents();
-      if ( j < (numComp + count) )
+      if ( i < (numComp + count) )
         {
         arrayComp = i - count;
         return j;
