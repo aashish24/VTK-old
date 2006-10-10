@@ -33,6 +33,8 @@
 #include "vtkOffsetsManagerArray.h"
 #undef  vtkOffsetsManager_DoNotInclude
 
+#include <vtksys/ios/sstream>
+
 #include <assert.h>
 #include <vtkstd/string>
 
@@ -1543,13 +1545,17 @@ void vtkXMLWriter::WriteDataArrayHeader(vtkDataArray* a, vtkIndent indent,
     {
     this->WriteStringAttribute("Name", alternateName);
     }
+  else if(const char* arrayName = a->GetName())
+    {
+    this->WriteStringAttribute("Name", arrayName);
+    }
   else
     {
-    const char* arrayName = a->GetName();
-    if(arrayName)
-      {
-      this->WriteStringAttribute("Name", arrayName);
-      }
+    // Generate a name for this array.
+    vtksys_ios::ostringstream name;
+    void* p = a;
+    name << "Array " << p;
+    this->WriteStringAttribute("Name", name.str().c_str());
     }
   if(a->GetNumberOfComponents() > 1)
     {
