@@ -29,12 +29,7 @@
 
 #include <math.h>
 
-#if defined(_MSC_VER) || defined (__BORLANDC__)
-# include "vtkWindows.h"
-# include <GL/glaux.h>
-#else
-# include "vtkOpenGL.h"
-#endif
+#include "vtkOpenGL.h"
 
 vtkCxxRevisionMacro(vtkWin32OpenGLRenderWindow, "$Revision$");
 vtkStandardNewMacro(vtkWin32OpenGLRenderWindow);
