@@ -16,11 +16,12 @@
 // .SECTION Description
 // Holds methods for defining/determining the current vtk version
 // (major, minor, build).
-
+//
 // .SECTION Caveats
 // This file will change frequently to update the VTKSourceVersion which
 // timestamps a particular source release.
-
+//
+// Updated for cvs tag VTK-5-2-0-rc2
 
 #ifndef __vtkVersion_h
 #define __vtkVersion_h
