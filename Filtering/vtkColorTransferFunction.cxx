@@ -21,6 +21,7 @@
 #include <vtkstd/algorithm>
 #include <vtkstd/iterator>
 #include <math.h>
+#include "vtkCriticalSection.h"
 
 vtkCxxRevisionMacro(vtkColorTransferFunction, "$Revision$");
 vtkStandardNewMacro(vtkColorTransferFunction);
@@ -242,6 +243,7 @@ vtkColorTransferFunction::vtkColorTransferFunction()
   this->AllowDuplicateScalars = 0;
 
   this->Internal = new vtkColorTransferFunctionInternals;
+  this->BuildTableMutex = vtkSimpleCriticalSection::New();
 }
 
 //----------------------------------------------------------------------------
@@ -262,6 +264,11 @@ vtkColorTransferFunction::~vtkColorTransferFunction()
     }
   this->Internal->Nodes.clear(); 
   delete this->Internal;
+
+  if (this->BuildTableMutex)
+    {
+    this->BuildTableMutex->Delete();
+    }
 }
 
 // Return the number of points which specify this function
@@ -1033,6 +1040,8 @@ const unsigned char *vtkColorTransferFunction::GetTable( double xStart, double x
     return this->Table;
     }
   
+  this->BuildTableMutex->Lock();
+
   if (this->TableSize != size)
     {
     delete [] this->Table;
@@ -1057,6 +1066,9 @@ const unsigned char *vtkColorTransferFunction::GetTable( double xStart, double x
   delete[] tmpTable;
 
   this->BuildTime.Modified();
+
+  this->BuildTableMutex->Unlock();
+
   return this->Table;
 }
 
