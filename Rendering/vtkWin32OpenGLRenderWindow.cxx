@@ -681,6 +681,9 @@ LRESULT vtkWin32OpenGLRenderWindow::MessageProc(HWND hWnd, UINT message,
     break;
     case WM_ERASEBKGND:
       return TRUE;
+    case WM_SETCURSOR:
+      this->SetCurrentCursor(this->GetCurrentCursor());
+      return TRUE;
     default:
       this->InvokeEvent(vtkCommand::RenderWindowMessageEvent, &message);
       break;
@@ -1405,11 +1408,19 @@ void vtkWin32OpenGLRenderWindow::CleanUpOffScreenRendering(void)
       {
       vtkErrorMacro("wglDeleteContext failed in CleanUpOffScreenRendering(), error: " << GetLastError());
       }
+    this->ContextId=0;
     }
 }
 
 void vtkWin32OpenGLRenderWindow::ResumeScreenRendering(void)
-{  
+{
+  // release OpenGL graphics resources before switch back to on-screen. 
+  if(this->ContextId!=0)
+    {
+      this->MakeCurrent();
+      this->CleanUpRenderers();
+    }
+
   this->Mapped = this->ScreenMapped;
   this->Size[0] = this->ScreenWindowSize[0];
   this->Size[1] = this->ScreenWindowSize[1];
@@ -1458,6 +1469,7 @@ void vtkWin32OpenGLRenderWindow::SetCursorPosition(int x, int y)
     }
 };
 
+//----------------------------------------------------------------------------
 void vtkWin32OpenGLRenderWindow::SetCurrentCursor(int shape)
 {
   if ( this->InvokeEvent(vtkCommand::CursorChangedEvent,&shape) )
