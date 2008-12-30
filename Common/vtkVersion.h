@@ -20,6 +20,10 @@
 // .SECTION Caveats
 // This file will change frequently to update the VTKSourceVersion which
 // timestamps a particular source release.
+//
+// VTK-5-2 is a bug fix branch under development and it will change from time
+// to time. Please use the latest stable release tag VTK-5-2-1 if you need a
+// source tree that will not change.
 
 #ifndef __vtkVersion_h
 #define __vtkVersion_h
