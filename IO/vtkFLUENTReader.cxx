@@ -181,6 +181,8 @@ vtkFLUENTReader::vtkFLUENTReader()
   this->FluentCaseFile = new ifstream;
   this->FluentDataFile = new ifstream;
 
+  this->NumberOfCells=0;
+  
   this->CellDataArraySelection = vtkDataArraySelection::New();
   this->SetDataByteOrderToLittleEndian();
 }
@@ -450,6 +452,7 @@ int vtkFLUENTReader::RequestInformation(
       this->VectorSubSectionIds->value.push_back(this->SubSectionIds->value[i]);
       }
     }
+  this->NumberOfCells = (int)this->Cells->value.size();
   return 1;
 }
 
@@ -744,8 +747,8 @@ int vtkFLUENTReader::GetDataChunk ()
     //file pointer to the "))" entry.
     char end[120];
     strcpy(end, "End of Binary Section   ");
-    strcat(end, index.c_str());
-    strcat(end, ")");
+    // strcat(end, index.c_str());
+    // strcat(end, ")");
     size_t len = strlen(end);
 
     // Load the data buffer enough to start comparing to the end vtkstd::string.
