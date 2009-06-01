@@ -91,8 +91,11 @@ vtkCommunity2DLayoutStrategy::~vtkCommunity2DLayoutStrategy()
 {
   this->SetEdgeWeightField(0);
   this->SetCommunityArrayName(0);
+  if (this->EdgeArray)
+    {
+    delete [] this->EdgeArray;
+    }
 }
-
 
 // Helper functions
 void vtkCommunity2DLayoutStrategy::GenerateCircularSplat(vtkImageData *splat, int x, int y)
