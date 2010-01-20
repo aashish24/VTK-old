@@ -16,6 +16,7 @@ SET(KIT_LIBS vtkIO vtkftgl
 
 SET(Kit_SRCS
   vtkAxis.cxx
+  vtkBarMark.cxx
   vtkBlockItem.cxx
   vtkBrush.cxx
   vtkChart.cxx
@@ -28,6 +29,7 @@ SET(Kit_SRCS
   vtkContextScene.cxx
   vtkContextView.cxx
   vtkImageItem.cxx
+  vtkMark.cxx
   vtkOpenGLContextDevice2D.cxx
   vtkPen.cxx
   vtkPlot.cxx
@@ -41,6 +43,7 @@ SET_SOURCE_FILES_PROPERTIES(
   vtkContextDevice2D
   vtkContextItem
   vtkContextMapper2D
+  vtkMark
   vtkPlot
   ABSTRACT
   )
