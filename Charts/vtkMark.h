@@ -24,11 +24,13 @@
 
 #include "vtkContextItem.h"
 
-#include "vtkTable.h"
-#include "vtkAbstractArray.h"
+#include "vtkSmartPointer.h"
+#include "vtkVariant.h"
 
+class vtkAbstractArray;
 class vtkMark;
 class vtkPanelMark;
+class vtkTable;
 
 class vtkDataElement
 {
@@ -87,12 +89,24 @@ public:
   bool IsConstant()
     { return this->Function == NULL; }
   T GetConstant()
-    { return this->Constant; }
+    {
+    return this->Constant;
+    }
   FunctionType GetFunction()
     { return this->Function; }
+
 protected:
   T Constant;
   FunctionType Function;
+};
+
+class VTK_CHARTS_EXPORT vtkDataValue : public vtkValue<vtkDataElement>
+{
+public:
+  vtkDataValue() { this->Function = NULL; }
+  vtkDataValue(FunctionType f)  { this->Function = f; }
+  vtkDataValue(vtkDataElement v) { this->Constant = v; this->Function = NULL; }
+  vtkDataElement GetData(vtkMark* m);
 };
 
 template <typename T>
@@ -143,9 +157,9 @@ public:
     this->Dirty = b;
     }
 
-protected:
   void Update(vtkMark* m);
 
+protected:
   vtkValue<T> Value;
   std::vector<T> Cache;
   bool Dirty;
@@ -156,9 +170,9 @@ class vtkColor
 {
 public:
   vtkColor() :
-    Red(0.0), Green(0.0), Blue(0.0), Alpha(0.0) { }
+    Red(0.0), Green(0.0), Blue(0.0), Alpha(1.0) { }
   vtkColor(double r, double g, double b) :
-    Red(r), Green(g), Blue(b), Alpha(0.0) { }
+    Red(r), Green(g), Blue(b), Alpha(1.0) { }
   vtkColor(double r, double g, double b, double a) :
     Red(r), Green(g), Blue(b), Alpha(a) { }
   double Red;
@@ -172,16 +186,33 @@ class VTK_CHARTS_EXPORT vtkMark : public vtkContextItem
 public:
   vtkTypeRevisionMacro(vtkMark, vtkContextItem);
   virtual void PrintSelf(ostream &os, vtkIndent indent);
+  static vtkMark* New();
 
   virtual void Extend(vtkMark* m);
 
-  void SetData(vtkDataElement data)
+  virtual bool Paint(vtkContext2D *painter);
+
+  virtual void Update()
     {
-      this->Data.SetValue(vtkValue<vtkDataElement>(data));
+    this->Left.Update(this);
+    this->Right.Update(this);
+    this->Top.Update(this);
+    this->Bottom.Update(this);
+    this->Title.Update(this);
+    this->FillColor.Update(this);
+    this->LineColor.Update(this);
+    this->LineWidth.Update(this);
+    this->Width.Update(this);
+    this->Height.Update(this);
+    }
+
+  void SetData(vtkDataValue data)
+    {
+      this->Data = data;
       this->DataChanged();
     }
-  vtkDataElement GetData()
-    { return this->Data.GetConstant(this); }
+  vtkDataValue GetData()
+    { return this->Data; }
 
   void SetLeft(vtkValue<double> v)
     { this->Left.SetValue(v); }
@@ -223,20 +254,38 @@ public:
   vtkValue<double>& GetLineWidth()
     { return this->LineWidth.GetValue(); }
 
+  void SetWidth(vtkValue<double> v)
+    { this->Width.SetValue(v); }
+  vtkValue<double>& GetWidth()
+    { return this->Width.GetValue(); }
+
+  void SetHeight(vtkValue<double> v)
+    { this->Height.SetValue(v); }
+  vtkValue<double>& GetHeight()
+    { return this->Height.GetValue(); }
+
   void SetParent(vtkPanelMark* p)
     { this->Parent = p; }
   vtkPanelMark* GetParent()
     { return this->Parent; }
+
+  vtkSetMacro(ParentMarkIndex, int);
+  vtkGetMacro(ParentMarkIndex, int);
+
+  vtkSetMacro(ParentDataIndex, int);
+  vtkGetMacro(ParentDataIndex, int);
 
   void SetIndex(vtkIdType i)
     { this->Index = i; }
   vtkIdType GetIndex()
     { return this->Index; }
 
-//BTX
-protected:
-  vtkMark();
-  ~vtkMark();
+  double GetCousinLeft();
+  double GetCousinRight();
+  double GetCousinTop();
+  double GetCousinBottom();
+  double GetCousinWidth();
+  double GetCousinHeight();
 
   virtual void DataChanged()
     {
@@ -248,9 +297,35 @@ protected:
     this->FillColor.SetDirty(true);
     this->LineColor.SetDirty(true);
     this->LineWidth.SetDirty(true);
+    this->Width.SetDirty(true);
+    this->Height.SetDirty(true);
     }
 
-  vtkValueHolder<vtkDataElement> Data;
+  void SaveInstance()
+    {
+    vtkSmartPointer<vtkMark> m = vtkSmartPointer<vtkMark>::New();
+    m->Extend(this);
+    m->SetType(m->GetType());
+    this->Instances.push_back(m);
+    }
+
+  enum {
+    BAR,
+    LINE
+    };
+
+  vtkSetMacro(Type, int);
+  vtkGetMacro(Type, int);
+
+//BTX
+protected:
+  vtkMark();
+  ~vtkMark();
+
+  bool PaintBar(vtkContext2D *painter);
+  bool PaintLine(vtkContext2D *painter);
+
+  vtkDataValue Data;
   vtkValueHolder<double> Left;
   vtkValueHolder<double> Right;
   vtkValueHolder<double> Top;
@@ -259,9 +334,16 @@ protected:
   vtkValueHolder<vtkColor> FillColor;
   vtkValueHolder<vtkColor> LineColor;
   vtkValueHolder<double> LineWidth;
+  vtkValueHolder<double> Width;
+  vtkValueHolder<double> Height;
 
   vtkPanelMark* Parent;
+  vtkIdType ParentMarkIndex;
+  vtkIdType ParentDataIndex;
   vtkIdType Index;
+  int Type;
+
+  std::vector<vtkSmartPointer<vtkMark> > Instances;
 
 private:
   vtkMark(const vtkMark &); // Not implemented.
@@ -276,22 +358,41 @@ void vtkValueHolder<T>::Update(vtkMark* m)
     {
     return;
     }
-  if (this->Value.IsConstant())
-    {
-    this->Cache.clear();
-    return;
-    }
-  vtkDataElement d = m->GetData();
+  vtkDataElement d = m->GetData().GetData(m);
   vtkIdType numChildren = d.GetNumberOfChildren();
   this->Cache.resize(numChildren);
-  for (vtkIdType i = 0; i < numChildren; ++i)
+  if (this->Value.IsConstant())
     {
-    m->SetIndex(i);
-    vtkDataElement e = d.GetChild(i);
-    this->Cache[i] = this->Value.GetFunction()(m, e);
+    for (vtkIdType i = 0; i < numChildren; ++i)
+      {
+      this->Cache[i] = this->Value.GetConstant();
+      }
+    }
+  else
+    {
+    for (vtkIdType i = 0; i < numChildren; ++i)
+      {
+      m->SetIndex(i);
+      vtkDataElement e = d.GetChild(i);
+      this->Cache[i] = this->Value.GetFunction()(m, e);
+      }
     }
   this->Dirty = false;
 }
 
+//-----------------------------------------------------------------------------
+class VTK_CHARTS_EXPORT vtkMarkUtil
+{
+public:
+  static vtkColor DefaultSeriesColor(vtkMark* m, vtkDataElement&);
+  static double StackLeft(vtkMark* m, vtkDataElement&)
+  {
+    return m->GetCousinLeft() + m->GetCousinWidth();
+  }
+  static double StackBottom(vtkMark* m, vtkDataElement&)
+  {
+    return m->GetCousinBottom() + m->GetCousinHeight();
+  }
+};
 
 #endif //__vtkMark_h

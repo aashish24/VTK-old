@@ -3,52 +3,31 @@
 #include "vtkContextScene.h"
 #include "vtkContextView.h"
 #include "vtkDoubleArray.h"
+#include "vtkLineMark.h"
 #include "vtkPanelMark.h"
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
 #include "vtkTable.h"
 
-double PanelLeftFunction(vtkMark* m, vtkDataElement& e)
+double PanelLeftFunction(vtkMark* m, vtkDataElement& d)
 {
-  return m->GetIndex()*15;
+  return 20 + m->GetIndex()*15;
 }
 
-double PanelBottomFunction(vtkMark* m, vtkDataElement& e)
+vtkDataElement DataFunction(vtkMark* m, vtkDataElement& d)
 {
-  return 0;
+  return d;
 }
 
-double LeftFunction(vtkMark* m, vtkDataElement& e)
+double LeftFunction(vtkMark* m, vtkDataElement& d)
 {
   return m->GetIndex()*50;
 }
 
-double BottomFunction(vtkMark* m, vtkDataElement& e)
+double HeightFunction(vtkMark* m, vtkDataElement& d)
 {
-  return 0;
-}
-
-double WidthFunction(vtkMark* m, vtkDataElement& e)
-{
-  return 15;
-}
-
-double HeightFunction(vtkMark* m, vtkDataElement& e)
-{
-  return e.GetValue().ToDouble()*200;
-}
-
-vtkColor LineColorFunction(vtkMark* m, vtkDataElement& e)
-{
-  return vtkColor(0.0, 0.0, 0.0);
-}
-
-vtkColor FillColorFunction(vtkMark* m, vtkDataElement& e)
-{
-  unsigned char colors[10][3] = {{166, 206, 227}, {31, 120, 180}, {178, 223, 13}, {51, 160, 44}, {251, 154, 153}, {227, 26, 28}, {253, 191, 111}, {255, 127, 0}, {202, 178, 214}, {106, 61, 154}};
-  vtkIdType index = m->GetParent()->GetIndex() % 10;
-  return vtkColor(colors[index][0]/255.0, colors[index][1]/255.0, colors[index][2]/255.0);
+  return d.GetValue().ToDouble()*200;
 }
 
 int TestMarks(int, char*[])
@@ -69,7 +48,7 @@ int TestMarks(int, char*[])
     {
     arr1->InsertNextValue(sin(i/5.0) + 1);
     arr2->InsertNextValue(cos(i/5.0) + 1);
-    arr3->InsertNextValue(i/20.0);
+    arr3->InsertNextValue(i/10.0);
     }
   t->AddColumn(arr1);
   t->AddColumn(arr2);
@@ -79,20 +58,22 @@ int TestMarks(int, char*[])
   data.SetDimension(1);
 
   vtkSmartPointer<vtkPanelMark> panel = vtkSmartPointer<vtkPanelMark>::New();
+  view->GetScene()->AddItem(panel);
   panel->SetData(data);
   panel->SetLeft(PanelLeftFunction);
-  panel->SetBottom(PanelBottomFunction);
-  view->GetScene()->AddItem(panel);
+  panel->SetBottom(20);
 
-  vtkSmartPointer<vtkBarMark> bar = vtkSmartPointer<vtkBarMark>::New();
-  //bar->SetData(vtkDataElement(t));
+  vtkMark* bar = panel->Add(vtkMark::BAR);
+  bar->SetData(DataFunction);
   bar->SetLeft(LeftFunction);
-  bar->SetBottom(BottomFunction);
-  bar->SetWidth(WidthFunction);
+  bar->SetBottom(vtkMarkUtil::StackBottom);
+  bar->SetWidth(15);
   bar->SetHeight(HeightFunction);
-  bar->SetLineColor(LineColorFunction);
-  bar->SetFillColor(FillColorFunction);
-  panel->Add(bar);
+
+  vtkMark* line = panel->Add(vtkMark::LINE);
+  line->SetLineColor(vtkMarkUtil::DefaultSeriesColor);
+  line->SetLineWidth(2);
+  line->SetBottom(bar->GetHeight());
 
   view->GetInteractor()->Initialize();
   view->GetInteractor()->Start();

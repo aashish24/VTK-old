@@ -29,6 +29,7 @@ SET(Kit_SRCS
   vtkContextScene.cxx
   vtkContextView.cxx
   vtkImageItem.cxx
+  vtkLineMark.cxx
   vtkMark.cxx
   vtkOpenGLContextDevice2D.cxx
   vtkPanelMark.cxx
@@ -44,7 +45,6 @@ SET_SOURCE_FILES_PROPERTIES(
   vtkContextDevice2D
   vtkContextItem
   vtkContextMapper2D
-  vtkMark
   vtkPlot
   ABSTRACT
   )

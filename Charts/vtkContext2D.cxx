@@ -73,6 +73,10 @@ void vtkContext2D::DrawLine(float x1, float y1, float x2, float y2)
     return;
     }
   float x[] = { x1, y1, x2, y2 };
+  if (this->Transform)
+    {
+    this->Transform->TransformPoints(&x[0], &x[0], 2);
+    }
 
   this->ApplyPen();
   this->Device->DrawPoly(&x[0], 2);
@@ -85,6 +89,10 @@ void vtkContext2D::DrawLine(float p[4])
     {
     vtkErrorMacro(<< "Attempted to paint with no active vtkContextDevice2D.");
     return;
+    }
+  if (this->Transform)
+    {
+    this->Transform->TransformPoints(&p[0], &p[0], 2);
     }
 
   this->ApplyPen();
