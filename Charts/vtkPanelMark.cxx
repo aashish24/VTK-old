@@ -13,62 +13,65 @@
 
 =========================================================================*/
 
-#include "vtkBarMark.h"
+#include "vtkPanelMark.h"
 
-#include "vtkBrush.h"
 #include "vtkContext2D.h"
 #include "vtkObjectFactory.h"
-#include "vtkPen.h"
+#include "vtkTransform2D.h"
 
 //-----------------------------------------------------------------------------
-vtkCxxRevisionMacro(vtkBarMark, "$Revision$");
-vtkStandardNewMacro(vtkBarMark);
+vtkCxxRevisionMacro(vtkPanelMark, "$Revision$");
+vtkStandardNewMacro(vtkPanelMark);
 
 //-----------------------------------------------------------------------------
-vtkBarMark::vtkBarMark()
+vtkPanelMark::vtkPanelMark()
 {
 }
 
 //-----------------------------------------------------------------------------
-vtkBarMark::~vtkBarMark()
+vtkPanelMark::~vtkPanelMark()
 {
 }
 
 //-----------------------------------------------------------------------------
-bool vtkBarMark::Hit(const vtkContextMouseEvent &)
+void vtkPanelMark::Add(vtkMark* m)
 {
-  return false;
-}
-
-unsigned char ConvertColor(double d)
-{
-  return static_cast<unsigned char>(255*d);
+  this->Marks.push_back(vtkSmartPointer<vtkMark>(m));
+  m->SetParent(this);
 }
 
 //-----------------------------------------------------------------------------
-bool vtkBarMark::Paint(vtkContext2D *painter)
+bool vtkPanelMark::Paint(vtkContext2D* painter)
 {
   double* left = this->Left.GetArray(this);
   double* right = this->Right.GetArray(this);
   double* top = this->Top.GetArray(this);
   double* bottom = this->Bottom.GetArray(this);
-  double* width = this->Width.GetArray(this);
-  double* height = this->Height.GetArray(this);
-  vtkColor* fillColor = this->FillColor.GetArray(this);
-  vtkColor* lineColor = this->LineColor.GetArray(this);
-  vtkIdType numChildren = this->Data.GetConstant(this).GetNumberOfChildren();
+  vtkDataElement data = this->Data.GetConstant(this);
+  vtkIdType numChildren = data.GetNumberOfChildren();
+  if (!painter->GetTransform())
+    {
+    vtkSmartPointer<vtkTransform2D> trans = vtkSmartPointer<vtkTransform2D>::New();
+    trans->Identity();
+    painter->SetTransform(trans);
+    }
   for (vtkIdType i = 0; i < numChildren; ++i)
     {
     this->Index = i;
-    painter->GetBrush()->SetColor(ConvertColor(fillColor[i].Red), ConvertColor(fillColor[i].Green), ConvertColor(fillColor[i].Blue));
-    painter->GetPen()->SetColor(ConvertColor(lineColor[i].Red), ConvertColor(lineColor[i].Green), ConvertColor(lineColor[i].Blue));
-    painter->DrawRect(left[i], bottom[i], width[i], height[i]);
+    painter->GetTransform()->Translate(left[i], bottom[i]);
+    vtkDataElement childData = data.GetChild(i);
+    for (size_t j = 0; j < this->Marks.size(); ++j)
+      {
+      this->Marks[j]->SetData(childData);
+      this->Marks[j]->Paint(painter);
+      }
+    painter->GetTransform()->Translate(-left[i], -bottom[i]);
     }
   return true;
 }
 
 //-----------------------------------------------------------------------------
-void vtkBarMark::PrintSelf(ostream &os, vtkIndent indent)
+void vtkPanelMark::PrintSelf(ostream &os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
 }

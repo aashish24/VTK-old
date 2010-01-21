@@ -55,26 +55,21 @@ public:
   vtkValue<double>& GetHeight()
     { return this->Height.GetValue(); }
 
-  void SetLineColor(vtkValue<vtkColor> v)
-    { this->LineColor.SetValue(v); }
-  vtkValue<vtkColor>& GetLineColor()
-    { return this->LineColor.GetValue(); }
-
-  void SetFillColor(vtkValue<vtkColor> v)
-    { this->FillColor.SetValue(v); }
-  vtkValue<vtkColor>& GetFillColor()
-    { return this->FillColor.GetValue(); }
-
 //BTX
 protected:
   vtkBarMark();
   ~vtkBarMark();
 
+  virtual void DataChanged()
+    {
+    this->Superclass::DataChanged();
+
+    this->Width.SetDirty(true);
+    this->Height.SetDirty(true);
+    }
+
   vtkValueHolder<double> Width;
   vtkValueHolder<double> Height;
-  vtkValueHolder<vtkColor> FillColor;
-  vtkValueHolder<vtkColor> LineColor;
-  vtkValueHolder<double> LineWidth;
 private:
   vtkBarMark(const vtkBarMark &); // Not implemented.
   void operator=(const vtkBarMark &);   // Not implemented.
