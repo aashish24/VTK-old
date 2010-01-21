@@ -13,14 +13,14 @@
 
 =========================================================================*/
 
-// .NAME vtkBarMark - base class for items that are part of a vtkContextScene.
+// .NAME vtkLineMark - base class for items that are part of a vtkContextScene.
 //
 // .SECTION Description
 // Derive from this class to create custom items that can be added to a
 // vtkContextScene.
 
-#ifndef __vtkBarMark_h
-#define __vtkBarMark_h
+#ifndef __vtkLineMark_h
+#define __vtkLineMark_h
 
 #include "vtkMark.h"
 
@@ -28,12 +28,12 @@ class vtkBrush;
 class vtkDataObject;
 class vtkPen;
 
-class VTK_CHARTS_EXPORT vtkBarMark : public vtkMark
+class VTK_CHARTS_EXPORT vtkLineMark : public vtkMark
 {
 public:
-  vtkTypeRevisionMacro(vtkBarMark, vtkMark);
+  vtkTypeRevisionMacro(vtkLineMark, vtkMark);
   virtual void PrintSelf(ostream &os, vtkIndent indent);
-  static vtkBarMark* New();
+  static vtkLineMark* New();
 
   // Description:
   // Paint event for the item, called whenever the item needs to be drawn,
@@ -47,13 +47,13 @@ public:
 
 //BTX
 protected:
-  vtkBarMark();
-  ~vtkBarMark();
+  vtkLineMark();
+  ~vtkLineMark();
 
 private:
-  vtkBarMark(const vtkBarMark &); // Not implemented.
-  void operator=(const vtkBarMark &);   // Not implemented.
+  vtkLineMark(const vtkLineMark &); // Not implemented.
+  void operator=(const vtkLineMark &);   // Not implemented.
 //ETX
 };
 
-#endif //__vtkBarMark_h
+#endif //__vtkLineMark_h

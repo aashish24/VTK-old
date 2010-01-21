@@ -38,9 +38,19 @@ public:
   virtual void PrintSelf(ostream &os, vtkIndent indent);
   static vtkPanelMark* New();
 
-  virtual void Add(vtkMark* m);
+  //virtual void Add(vtkMark* m);
+  virtual vtkMark* Add(int type);
 
   virtual bool Paint(vtkContext2D*);
+
+  virtual void Update();
+
+  virtual vtkMark* GetMarkInstance(int markIndex, int dataIndex)
+    {
+    vtkDataElement data = this->Data.GetData(this);
+    vtkIdType numChildren = data.GetNumberOfChildren();
+    return this->MarkInstances[markIndex*numChildren + dataIndex];
+    }
 
 //BTX
 protected:
@@ -48,6 +58,7 @@ protected:
   ~vtkPanelMark();
 
   std::vector<vtkSmartPointer<vtkMark> > Marks;
+  std::vector<vtkSmartPointer<vtkMark> > MarkInstances;
 
 private:
   vtkPanelMark(const vtkPanelMark &); // Not implemented.
