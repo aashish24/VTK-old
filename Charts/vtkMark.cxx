@@ -83,6 +83,7 @@ vtkDataElement vtkDataElement::GetChild(vtkIdType i)
   return vtkDataElement();
 }
 
+//-----------------------------------------------------------------------------
 vtkVariant vtkDataElement::GetValue(vtkIdType i)
 {
   switch (this->Type)
@@ -134,11 +135,24 @@ vtkCxxRevisionMacro(vtkMark, "$Revision$");
 //-----------------------------------------------------------------------------
 vtkMark::vtkMark()
 {
+  this->Parent = NULL;
+  this->Index = 0;
 }
 
 //-----------------------------------------------------------------------------
 vtkMark::~vtkMark()
 {
+}
+
+//-----------------------------------------------------------------------------
+void vtkMark::Extend(vtkMark* m)
+{
+  this->Data.SetValue(m->GetData());
+  this->Left.SetValue(m->GetLeft());
+  this->Right.SetValue(m->GetRight());
+  this->Top.SetValue(m->GetTop());
+  this->Bottom.SetValue(m->GetBottom());
+  this->Title.SetValue(m->GetTitle());
 }
 
 //-----------------------------------------------------------------------------

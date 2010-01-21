@@ -31,6 +31,7 @@ SET(Kit_SRCS
   vtkImageItem.cxx
   vtkMark.cxx
   vtkOpenGLContextDevice2D.cxx
+  vtkPanelMark.cxx
   vtkPen.cxx
   vtkPlot.cxx
   vtkPlotGrid.cxx

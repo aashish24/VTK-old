@@ -28,6 +28,7 @@
 #include "vtkAbstractArray.h"
 
 class vtkMark;
+class vtkPanelMark;
 
 class vtkDataElement
 {
@@ -79,7 +80,7 @@ template <typename T>
 class vtkValue
 {
 public:
-  typedef T (*FunctionType)(vtkMark&, vtkDataElement&, vtkIdType);
+  typedef T (*FunctionType)(vtkMark*, vtkDataElement&);
   vtkValue() : Function(NULL) { }
   vtkValue(FunctionType f) : Function(f) { }
   vtkValue(T v) : Constant(v), Function(NULL) { }
@@ -98,12 +99,16 @@ template <typename T>
 class vtkValueHolder
 {
 public:
-  vtkValueHolder() : Dirty(true) { }
+  vtkValueHolder() : Dirty(true), Set(false) { }
+
+  void UnsetValue()
+    { Set = false; }
   void SetValue(vtkValue<T> v)
-    { Dirty = true; Value = v; }
+    { Dirty = true; Set = true; Value = v; }
   vtkValue<T>& GetValue()
     { return Value; }
-  T* GetArray(vtkMark& m)
+
+  T* GetArray(vtkMark* m)
     {
     this->Update(m);
     if (this->Cache.size() == 0)
@@ -112,7 +117,8 @@ public:
       }
     return &(this->Cache[0]);
     }
-  T GetConstant(vtkMark& m)
+
+  T GetConstant(vtkMark* m)
     {
     this->Update(m);
     if (this->Cache.size() > 0)
@@ -121,12 +127,29 @@ public:
       }
     return this->Value.GetConstant();
     }
+
+  bool IsSet()
+    {
+    return this->Set;
+    }
+
+  bool IsDirty()
+    {
+    return this->Dirty;
+    }
+
+  void SetDirty(bool b)
+    {
+    this->Dirty = b;
+    }
+
 protected:
-  void Update(vtkMark& m);
+  void Update(vtkMark* m);
 
   vtkValue<T> Value;
   std::vector<T> Cache;
   bool Dirty;
+  bool Set;
 };
 
 class vtkColor
@@ -150,10 +173,15 @@ public:
   vtkTypeRevisionMacro(vtkMark, vtkContextItem);
   virtual void PrintSelf(ostream &os, vtkIndent indent);
 
+  virtual void Extend(vtkMark* m);
+
   void SetData(vtkDataElement data)
-    { this->Data.SetValue(vtkValue<vtkDataElement>(data)); }
+    {
+      this->Data.SetValue(vtkValue<vtkDataElement>(data));
+      this->DataChanged();
+    }
   vtkDataElement GetData()
-    { return this->Data.GetConstant(*this); }
+    { return this->Data.GetConstant(this); }
 
   void SetLeft(vtkValue<double> v)
     { this->Left.SetValue(v); }
@@ -180,10 +208,47 @@ public:
   vtkValue<std::string>& GetTitle()
     { return this->Title.GetValue(); }
 
+  void SetLineColor(vtkValue<vtkColor> v)
+    { this->LineColor.SetValue(v); }
+  vtkValue<vtkColor>& GetLineColor()
+    { return this->LineColor.GetValue(); }
+
+  void SetFillColor(vtkValue<vtkColor> v)
+    { this->FillColor.SetValue(v); }
+  vtkValue<vtkColor>& GetFillColor()
+    { return this->FillColor.GetValue(); }
+
+  void SetLineWidth(vtkValue<double> v)
+    { this->LineWidth.SetValue(v); }
+  vtkValue<double>& GetLineWidth()
+    { return this->LineWidth.GetValue(); }
+
+  void SetParent(vtkPanelMark* p)
+    { this->Parent = p; }
+  vtkPanelMark* GetParent()
+    { return this->Parent; }
+
+  void SetIndex(vtkIdType i)
+    { this->Index = i; }
+  vtkIdType GetIndex()
+    { return this->Index; }
+
 //BTX
 protected:
   vtkMark();
   ~vtkMark();
+
+  virtual void DataChanged()
+    {
+    this->Left.SetDirty(true);
+    this->Right.SetDirty(true);
+    this->Top.SetDirty(true);
+    this->Bottom.SetDirty(true);
+    this->Title.SetDirty(true);
+    this->FillColor.SetDirty(true);
+    this->LineColor.SetDirty(true);
+    this->LineWidth.SetDirty(true);
+    }
 
   vtkValueHolder<vtkDataElement> Data;
   vtkValueHolder<double> Left;
@@ -191,6 +256,12 @@ protected:
   vtkValueHolder<double> Top;
   vtkValueHolder<double> Bottom;
   vtkValueHolder<std::string> Title;
+  vtkValueHolder<vtkColor> FillColor;
+  vtkValueHolder<vtkColor> LineColor;
+  vtkValueHolder<double> LineWidth;
+
+  vtkPanelMark* Parent;
+  vtkIdType Index;
 
 private:
   vtkMark(const vtkMark &); // Not implemented.
@@ -199,7 +270,7 @@ private:
 };
 
 template <typename T>
-void vtkValueHolder<T>::Update(vtkMark& m)
+void vtkValueHolder<T>::Update(vtkMark* m)
 {
   if (!this->Dirty)
     {
@@ -210,13 +281,14 @@ void vtkValueHolder<T>::Update(vtkMark& m)
     this->Cache.clear();
     return;
     }
-  vtkDataElement d = m.GetData();
+  vtkDataElement d = m->GetData();
   vtkIdType numChildren = d.GetNumberOfChildren();
   this->Cache.resize(numChildren);
   for (vtkIdType i = 0; i < numChildren; ++i)
     {
+    m->SetIndex(i);
     vtkDataElement e = d.GetChild(i);
-    this->Cache[i] = this->Value.GetFunction()(m, e, i);
+    this->Cache[i] = this->Value.GetFunction()(m, e);
     }
   this->Dirty = false;
 }
