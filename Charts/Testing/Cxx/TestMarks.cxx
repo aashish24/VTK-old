@@ -60,13 +60,15 @@ int TestMarks(int, char*[])
   vtkSmartPointer<vtkPanelMark> panel = vtkSmartPointer<vtkPanelMark>::New();
   view->GetScene()->AddItem(panel);
   panel->SetData(data);
-  panel->SetLeft(PanelLeftFunction);
+  //panel->SetLeft(PanelLeftFunction);
+  panel->SetLeft(20);
   panel->SetBottom(20);
 
   vtkMark* bar = panel->Add(vtkMark::BAR);
   bar->SetData(DataFunction);
   bar->SetLeft(LeftFunction);
   bar->SetBottom(vtkMarkUtil::StackBottom);
+  //bar->SetBottom(0.0);
   bar->SetWidth(15);
   bar->SetHeight(HeightFunction);
 

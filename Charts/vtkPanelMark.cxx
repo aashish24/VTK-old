@@ -36,23 +36,8 @@ vtkPanelMark::~vtkPanelMark()
 //-----------------------------------------------------------------------------
 vtkMark* vtkPanelMark::Add(int type)
 {
-  vtkSmartPointer<vtkMark> m = vtkSmartPointer<vtkMark>::New();
-  m->SetType(type);
-
-  // Set defaults
-  switch(type)
-    {
-    case BAR:
-      m->SetFillColor(vtkMarkUtil::DefaultSeriesColor);
-      m->SetLineWidth(1);
-      m->SetLineColor(vtkColor(0.0, 0.0, 0.0, 1.0));
-      break;
-    case LINE:
-      m->SetLineColor(vtkMarkUtil::DefaultSeriesColor);
-      m->SetLineWidth(2);
-      break;
-    }
-
+  vtkSmartPointer<vtkMark> m;
+  m.TakeReference(vtkMark::CreateMark(type));
   if (this->Marks.size() > 0)
     {
     m->Extend(this->Marks.back());
@@ -71,7 +56,7 @@ void vtkPanelMark::Update()
   this->Top.Update(this);
   this->Bottom.Update(this);
   vtkDataElement data = this->Data.GetData(this);
-  vtkIdType numMarks = this->Marks.size();
+  size_t numMarks = this->Marks.size();
   vtkIdType numChildren = data.GetNumberOfChildren();
   for (size_t j = 0; j < numMarks; ++j)
     {
@@ -80,9 +65,9 @@ void vtkPanelMark::Update()
       this->Index = i;
       this->Marks[j]->DataChanged();
       this->Marks[j]->Update();
-      vtkSmartPointer<vtkMark> m = vtkSmartPointer<vtkMark>::New();
+      vtkSmartPointer<vtkMark> m;
+      m.TakeReference(vtkMark::CreateMark(this->Marks[j]->GetType()));
       m->Extend(this->Marks[j]);
-      m->SetType(this->Marks[j]->GetType());
       m->SetParent(this->Marks[j]->GetParent());
       m->SetParentMarkIndex(j);
       m->SetParentDataIndex(i);
@@ -107,7 +92,7 @@ bool vtkPanelMark::Paint(vtkContext2D* painter)
   double* left = this->Left.GetArray(this);
   double* bottom = this->Bottom.GetArray(this);
   vtkDataElement data = this->Data.GetData(this);
-  vtkIdType numMarks = this->Marks.size();
+  size_t numMarks = this->Marks.size();
   vtkIdType numChildren = data.GetNumberOfChildren();
   for (size_t j = 0; j < numMarks; ++j)
     {

@@ -23,6 +23,9 @@
 #include "vtkPen.h"
 #include "vtkTable.h"
 
+#include "vtkBarMark.h"
+#include "vtkLineMark.h"
+
 //-----------------------------------------------------------------------------
 vtkIdType vtkDataElement::GetNumberOfChildren()
 {
@@ -170,12 +173,27 @@ vtkMark::vtkMark()
   this->Index = 0;
   this->ParentMarkIndex = 0;
   this->ParentDataIndex = 0;
-  this->Type = BAR;
 }
 
 //-----------------------------------------------------------------------------
 vtkMark::~vtkMark()
 {
+}
+
+//-----------------------------------------------------------------------------
+vtkMark* vtkMark::CreateMark(int type)
+{
+  vtkMark* m = NULL;
+  switch (type)
+    {
+    case BAR:
+      m = vtkBarMark::New();
+      break;
+    case LINE:
+      m = vtkLineMark::New();
+      break;
+    }
+  return m;
 }
 
 //-----------------------------------------------------------------------------
@@ -254,81 +272,6 @@ double vtkMark::GetCousinHeight()
   return 0.0;
   }
 
-
-//-----------------------------------------------------------------------------
-bool vtkMark::Paint(vtkContext2D *painter)
-{
-  switch (this->Type)
-    {
-    case BAR:
-      this->PaintBar(painter);
-      break;
-    case LINE:
-      this->PaintLine(painter);
-      break;
-    }
-}
-
-//-----------------------------------------------------------------------------
-bool vtkMark::PaintBar(vtkContext2D *painter)
-{
-  double* left = this->Left.GetArray(this);
-  double* bottom = this->Bottom.GetArray(this);
-  double* width = this->Width.GetArray(this);
-  double* height = this->Height.GetArray(this);
-  vtkColor* fillColor = this->FillColor.GetArray(this);
-  vtkColor* lineColor = this->LineColor.GetArray(this);
-  double* lineWidth = this->LineWidth.GetArray(this);
-  vtkIdType numChildren = this->Data.GetData(this).GetNumberOfChildren();
-  for (vtkIdType i = 0; i < numChildren; ++i)
-    {
-    painter->GetBrush()->SetColor(
-      static_cast<unsigned char>(255*fillColor[i].Red),
-      static_cast<unsigned char>(255*fillColor[i].Green),
-      static_cast<unsigned char>(255*fillColor[i].Blue),
-      static_cast<unsigned char>(255*fillColor[i].Alpha));
-    painter->GetPen()->SetColor(
-      static_cast<unsigned char>(255*lineColor[i].Red),
-      static_cast<unsigned char>(255*lineColor[i].Green),
-      static_cast<unsigned char>(255*lineColor[i].Blue),
-      static_cast<unsigned char>(255*lineColor[i].Alpha));
-    if (lineWidth[i] > 0.0)
-      {
-      painter->GetPen()->SetWidth(lineWidth[i]);
-      }
-    else
-      {
-      painter->GetPen()->SetOpacity(0);
-      }
-    painter->DrawRect(left[i], bottom[i], width[i], height[i]);
-    }
-  return true;
-}
-
-//-----------------------------------------------------------------------------
-bool vtkMark::PaintLine(vtkContext2D *painter)
-{
-  double* left = this->Left.GetArray(this);
-  double* bottom = this->Bottom.GetArray(this);
-  vtkColor* lineColor = this->LineColor.GetArray(this);
-  double* lineWidth = this->LineWidth.GetArray(this);
-
-  vtkIdType numChildren = this->Data.GetData(this).GetNumberOfChildren();
-  if (numChildren > 0)
-    {
-    painter->GetPen()->SetWidth(lineWidth[0]);
-    painter->GetPen()->SetColor(
-      static_cast<unsigned char>(255*lineColor[0].Red),
-      static_cast<unsigned char>(255*lineColor[0].Green),
-      static_cast<unsigned char>(255*lineColor[0].Blue),
-      static_cast<unsigned char>(255*lineColor[0].Alpha));
-    }
-  for (vtkIdType i = 1; i < numChildren; ++i)
-    {
-    painter->DrawLine(left[i-1], bottom[i-1], left[i], bottom[i]);
-    }
-  return true;
-}
 
 //-----------------------------------------------------------------------------
 void vtkMark::PrintSelf(ostream &os, vtkIndent indent)

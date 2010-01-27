@@ -45,6 +45,8 @@ public:
   virtual bool Hit(const vtkContextMouseEvent &mouse);
 //ETX
 
+  virtual int GetType() { return LINE; }
+
 //BTX
 protected:
   vtkLineMark();
