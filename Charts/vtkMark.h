@@ -32,7 +32,7 @@ class vtkMark;
 class vtkPanelMark;
 class vtkTable;
 
-class vtkDataElement
+class VTK_CHARTS_EXPORT vtkDataElement
 {
 public:
   vtkDataElement() :
@@ -188,9 +188,16 @@ public:
   virtual void PrintSelf(ostream &os, vtkIndent indent);
   static vtkMark* New();
 
+  enum {
+    BAR,
+    LINE
+    };
+
+  static vtkMark* CreateMark(int type);
+
   virtual void Extend(vtkMark* m);
 
-  virtual bool Paint(vtkContext2D *painter);
+  virtual bool Paint(vtkContext2D* vtkNotUsed(painter)) { return true; }
 
   virtual void Update()
     {
@@ -301,21 +308,7 @@ public:
     this->Height.SetDirty(true);
     }
 
-  void SaveInstance()
-    {
-    vtkSmartPointer<vtkMark> m = vtkSmartPointer<vtkMark>::New();
-    m->Extend(this);
-    m->SetType(m->GetType());
-    this->Instances.push_back(m);
-    }
-
-  enum {
-    BAR,
-    LINE
-    };
-
-  vtkSetMacro(Type, int);
-  vtkGetMacro(Type, int);
+  virtual int GetType() { return BAR; }
 
 //BTX
 protected:
@@ -341,9 +334,6 @@ protected:
   vtkIdType ParentMarkIndex;
   vtkIdType ParentDataIndex;
   vtkIdType Index;
-  int Type;
-
-  std::vector<vtkSmartPointer<vtkMark> > Instances;
 
 private:
   vtkMark(const vtkMark &); // Not implemented.
