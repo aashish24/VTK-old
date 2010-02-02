@@ -72,10 +72,6 @@ void vtkContext2D::DrawLine(float x1, float y1, float x2, float y2)
     return;
     }
   float x[] = { x1, y1, x2, y2 };
-  if (this->Transform)
-    {
-    this->Transform->TransformPoints(&x[0], &x[0], 2);
-    }
 
   this->ApplyPen();
   this->Device->DrawPoly(&x[0], 2);
@@ -88,10 +84,6 @@ void vtkContext2D::DrawLine(float p[4])
     {
     vtkErrorMacro(<< "Attempted to paint with no active vtkContextDevice2D.");
     return;
-    }
-  if (this->Transform)
-    {
-    this->Transform->TransformPoints(&p[0], &p[0], 2);
     }
 
   this->ApplyPen();
@@ -333,14 +325,18 @@ unsigned int vtkContext2D::AddPointSprite(vtkImageData *image)
 //-----------------------------------------------------------------------------
 void vtkContext2D::SetTransform(vtkTransform2D *transform)
 {
-  if (this->Transform)
+  if(transform != this->Transform && transform)
+    {
+    transform->Register(this);
+    }
+
+  if (this->Transform && (this->Transform != transform))
     {
     this->Transform->Delete();
     }
   this->Transform = transform;
   if (transform)
     {
-    transform->Register(this);
     this->Device->SetMatrix(transform->GetMatrix());
     }
 }
