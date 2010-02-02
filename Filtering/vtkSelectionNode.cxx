@@ -23,6 +23,7 @@
 #include "vtkInformationDoubleKey.h"
 #include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
+#include "vtkProp.h"
 #include "vtkSmartPointer.h"
 
 vtkCxxRevisionMacro(vtkSelectionNode, "$Revision$");
@@ -225,6 +226,22 @@ int vtkSelectionNode::GetFieldType()
     return this->GetProperties()->Get(vtkSelectionNode::FIELD_TYPE());
     }
   return -1;
+}
+
+//----------------------------------------------------------------------------
+void vtkSelectionNode::SetSelectedProp(vtkProp* prop)
+{
+  this->GetProperties()->Set(vtkSelectionNode::PROP(), prop);
+}
+
+//----------------------------------------------------------------------------
+vtkProp* vtkSelectionNode::GetSelectedProp()
+{
+  if (this->GetProperties()->Has(vtkSelectionNode::PROP()))
+    {
+    return vtkProp::SafeDownCast(this->GetProperties()->Get(vtkSelectionNode::PROP()));
+    }
+  return 0;
 }
 
 //----------------------------------------------------------------------------

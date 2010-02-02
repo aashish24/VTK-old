@@ -144,6 +144,9 @@
 /* Whether the Boost library is being used */
 #cmakedefine VTK_USE_BOOST
 
+/* Whether Gnu R can be used */
+#cmakedefine VTK_USE_GNU_R
+
 /* Whether the Qt files are available */
 #cmakedefine VTK_USE_QT
 
@@ -237,5 +240,8 @@ typedef int vtkstd_bool;
    typedef unsigned __int64 vtkIOStreamULL;
 # endif
 #endif
+
+/* Set the whether we have UINTPTR_T defined in support of the GNU R interface */
+#cmakedefine HAVE_VTK_UINTPTR_T
 
 #endif
