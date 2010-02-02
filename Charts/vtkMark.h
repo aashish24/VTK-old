@@ -36,17 +36,17 @@ class VTK_CHARTS_EXPORT vtkDataElement
 {
 public:
   vtkDataElement() :
-    Table(NULL), AbstractArray(NULL), Index(-1), Type(SCALAR), Dimension(0) { }
+    Table(NULL), AbstractArray(NULL), Index(-1), Type(SCALAR), Dimension(0), Valid(false) { }
   vtkDataElement(vtkVariant v) :
-    Scalar(v), Table(NULL), AbstractArray(NULL), Index(-1), Type(SCALAR), Dimension(0) { }
+    Scalar(v), Table(NULL), AbstractArray(NULL), Index(-1), Type(SCALAR), Dimension(0), Valid(true) { }
   vtkDataElement(vtkTable* table) :
-    Table(table), AbstractArray(NULL), Index(-1), Type(TABLE), Dimension(0) { }
+    Table(table), AbstractArray(NULL), Index(-1), Type(TABLE), Dimension(0), Valid(true) { }
   vtkDataElement(vtkTable* table, vtkIdType row) :
-    Table(table), AbstractArray(NULL), Index(row), Type(TABLE_ROW), Dimension(0) { }
+    Table(table), AbstractArray(NULL), Index(row), Type(TABLE_ROW), Dimension(0), Valid(true) { }
   vtkDataElement(vtkAbstractArray* arr) :
-    Table(NULL), AbstractArray(arr), Index(-1), Type(ABSTRACT_ARRAY), Dimension(0) { }
+    Table(NULL), AbstractArray(arr), Index(-1), Type(ABSTRACT_ARRAY), Dimension(0), Valid(true) { }
   vtkDataElement(vtkAbstractArray* arr, vtkIdType index, int type) :
-    Table(NULL), AbstractArray(arr), Index(index), Type(type), Dimension(0) { }
+    Table(NULL), AbstractArray(arr), Index(index), Type(type), Dimension(0), Valid(true) { }
 
   enum {
     INVALID,
@@ -67,10 +67,12 @@ public:
   vtkDataElement GetChild(vtkIdType i);
   vtkVariant GetValue(vtkIdType i = 0);
   vtkVariant GetValue(std::string str);
+  bool IsValid(); 
 
 protected:
   int Type;
   int Dimension;
+  bool Valid;
 
   vtkTable* Table;
   vtkAbstractArray* AbstractArray;
@@ -348,8 +350,13 @@ void vtkValueHolder<T>::Update(vtkMark* m)
     {
     return;
     }
-  vtkDataElement d = m->GetData().GetData(m);
-  vtkIdType numChildren = d.GetNumberOfChildren();
+  vtkDataElement d = m->GetData().GetData(m);  
+  vtkIdType numChildren = 1;
+  if(d.IsValid())
+    {
+    numChildren = d.GetNumberOfChildren();
+    }
+  
   this->Cache.resize(numChildren);
   if (this->Value.IsConstant())
     {

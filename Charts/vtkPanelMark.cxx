@@ -54,10 +54,16 @@ void vtkPanelMark::Update()
   this->Left.Update(this);
   this->Right.Update(this);
   this->Top.Update(this);
-  this->Bottom.Update(this);
+  this->Bottom.Update(this);  
+  size_t numMarks = this->Marks.size();  
+  
+  // Create only a single instance if no real data is set on panel. 
+  vtkIdType numChildren = 1; 
   vtkDataElement data = this->Data.GetData(this);
-  size_t numMarks = this->Marks.size();
-  vtkIdType numChildren = data.GetNumberOfChildren();
+  if(data.IsValid())
+    {    
+    numChildren = data.GetNumberOfChildren();
+    }
   for (size_t j = 0; j < numMarks; ++j)
     {
     for (vtkIdType i = 0; i < numChildren; ++i)
@@ -90,10 +96,15 @@ bool vtkPanelMark::Paint(vtkContext2D* painter)
     }
 
   double* left = this->Left.GetArray(this);
-  double* bottom = this->Bottom.GetArray(this);
-  vtkDataElement data = this->Data.GetData(this);
+  double* bottom = this->Bottom.GetArray(this);  
   size_t numMarks = this->Marks.size();
-  vtkIdType numChildren = data.GetNumberOfChildren();
+  
+  vtkDataElement data = this->Data.GetData(this);
+  vtkIdType numChildren = 1;
+  if(data.IsValid())
+    {
+    numChildren = data.GetNumberOfChildren();
+    }
   for (size_t j = 0; j < numMarks; ++j)
     {
     for (vtkIdType i = 0; i < numChildren; ++i)
