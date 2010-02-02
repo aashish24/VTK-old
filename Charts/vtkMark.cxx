@@ -139,6 +139,12 @@ vtkVariant vtkDataElement::GetValue(std::string str)
 }
 
 //-----------------------------------------------------------------------------
+bool vtkDataElement::IsValid()
+{
+  return this->Valid;
+}
+
+//-----------------------------------------------------------------------------
 vtkDataElement vtkDataValue::GetData(vtkMark* m)
 {
   if (this->Function)

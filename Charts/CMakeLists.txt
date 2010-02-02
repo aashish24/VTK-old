@@ -47,7 +47,7 @@ SET_SOURCE_FILES_PROPERTIES(
   vtkContextMapper2D
   vtkPlot
   ABSTRACT
-  )
+  ) 
 
 #-----------------------------------------------------------------------------
 # Include CMake code common to all kits.
