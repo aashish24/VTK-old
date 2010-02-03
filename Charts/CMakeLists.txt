@@ -28,6 +28,7 @@ SET(Kit_SRCS
   vtkContextMapper2D.cxx
   vtkContextScene.cxx
   vtkContextView.cxx
+  vtkDataElement.cxx
   vtkImageItem.cxx
   vtkLineMark.cxx
   vtkMark.cxx
@@ -47,7 +48,12 @@ SET_SOURCE_FILES_PROPERTIES(
   vtkContextMapper2D
   vtkPlot
   ABSTRACT
-  ) 
+  )
+
+SET_SOURCE_FILES_PROPERTIES(
+  vtkDataElement
+  WRAP_EXCLUDE
+)
 
 #-----------------------------------------------------------------------------
 # Include CMake code common to all kits.
