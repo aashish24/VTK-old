@@ -16,6 +16,7 @@ SET(KIT_LIBS vtkIO vtkftgl
 
 SET(Kit_SRCS
   vtkAxis.cxx
+  vtkBarMark.cxx
   vtkBlockItem.cxx
   vtkBrush.cxx
   vtkChart.cxx
@@ -28,7 +29,10 @@ SET(Kit_SRCS
   vtkContextScene.cxx
   vtkContextView.cxx
   vtkImageItem.cxx
+  vtkLineMark.cxx
+  vtkMark.cxx
   vtkOpenGLContextDevice2D.cxx
+  vtkPanelMark.cxx
   vtkPen.cxx
   vtkPlot.cxx
   vtkPlotGrid.cxx
@@ -43,7 +47,7 @@ SET_SOURCE_FILES_PROPERTIES(
   vtkContextMapper2D
   vtkPlot
   ABSTRACT
-  )
+  ) 
 
 #-----------------------------------------------------------------------------
 # Include CMake code common to all kits.
