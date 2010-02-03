@@ -24,39 +24,9 @@
 
 #include "vtkContextItem.h"
 #include "vtkDataElement.h"
+#include "vtkDataValue.h"
 #include "vtkSmartPointer.h"
 #include "vtkVariant.h"
-
-template <typename T>
-class vtkValue
-{
-public:
-  typedef T (*FunctionType)(vtkMark*, vtkDataElement&);
-  vtkValue() : Function(NULL) { }
-  vtkValue(FunctionType f) : Function(f) { }
-  vtkValue(T v) : Constant(v), Function(NULL) { }
-  bool IsConstant()
-    { return this->Function == NULL; }
-  T GetConstant()
-    {
-    return this->Constant;
-    }
-  FunctionType GetFunction()
-    { return this->Function; }
-
-protected:
-  T Constant;
-  FunctionType Function;
-};
-
-class VTK_CHARTS_EXPORT vtkDataValue : public vtkValue<vtkDataElement>
-{
-public:
-  vtkDataValue() { this->Function = NULL; }
-  vtkDataValue(FunctionType f)  { this->Function = f; }
-  vtkDataValue(vtkDataElement v) { this->Constant = v; this->Function = NULL; }
-  vtkDataElement GetData(vtkMark* m);
-};
 
 template <typename T>
 class vtkValueHolder
@@ -290,6 +260,7 @@ private:
 //ETX
 };
 
+//-----------------------------------------------------------------------------
 template <typename T>
 void vtkValueHolder<T>::Update(vtkMark* m)
 {

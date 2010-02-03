@@ -29,6 +29,7 @@ SET(Kit_SRCS
   vtkContextScene.cxx
   vtkContextView.cxx
   vtkDataElement.cxx
+  vtkDataValue.cxx
   vtkImageItem.cxx
   vtkLineMark.cxx
   vtkMark.cxx
@@ -46,6 +47,7 @@ SET_SOURCE_FILES_PROPERTIES(
   vtkContextDevice2D
   vtkContextItem
   vtkContextMapper2D
+  vtkDataValue
   vtkPlot
   ABSTRACT
   )
