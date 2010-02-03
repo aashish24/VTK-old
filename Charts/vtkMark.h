@@ -23,62 +23,9 @@
 #define __vtkMark_h
 
 #include "vtkContextItem.h"
-
+#include "vtkDataElement.h"
 #include "vtkSmartPointer.h"
 #include "vtkVariant.h"
-
-class vtkAbstractArray;
-class vtkMark;
-class vtkPanelMark;
-class vtkTable;
-
-class VTK_CHARTS_EXPORT vtkDataElement
-{
-public:
-  vtkDataElement() :
-    Table(NULL), AbstractArray(NULL), Index(-1), Type(SCALAR), Dimension(0), Valid(false) { }
-  vtkDataElement(vtkVariant v) :
-    Scalar(v), Table(NULL), AbstractArray(NULL), Index(-1), Type(SCALAR), Dimension(0), Valid(true) { }
-  vtkDataElement(vtkTable* table) :
-    Table(table), AbstractArray(NULL), Index(-1), Type(TABLE), Dimension(0), Valid(true) { }
-  vtkDataElement(vtkTable* table, vtkIdType row) :
-    Table(table), AbstractArray(NULL), Index(row), Type(TABLE_ROW), Dimension(0), Valid(true) { }
-  vtkDataElement(vtkAbstractArray* arr) :
-    Table(NULL), AbstractArray(arr), Index(-1), Type(ABSTRACT_ARRAY), Dimension(0), Valid(true) { }
-  vtkDataElement(vtkAbstractArray* arr, vtkIdType index, int type) :
-    Table(NULL), AbstractArray(arr), Index(index), Type(type), Dimension(0), Valid(true) { }
-
-  enum {
-    INVALID,
-    TABLE,
-    TABLE_ROW,
-    ABSTRACT_ARRAY,
-    ABSTRACT_ARRAY_TUPLE,
-    ABSTRACT_ARRAY_COMPONENT,
-    SCALAR
-    };
-
-  void SetDimension(int dim)
-    {
-    this->Dimension = dim;
-    }
-
-  vtkIdType GetNumberOfChildren();
-  vtkDataElement GetChild(vtkIdType i);
-  vtkVariant GetValue(vtkIdType i = 0);
-  vtkVariant GetValue(std::string str);
-  bool IsValid(); 
-
-protected:
-  int Type;
-  int Dimension;
-  bool Valid;
-
-  vtkTable* Table;
-  vtkAbstractArray* AbstractArray;
-  vtkIdType Index;
-  vtkVariant Scalar;
-};
 
 template <typename T>
 class vtkValue
@@ -350,13 +297,13 @@ void vtkValueHolder<T>::Update(vtkMark* m)
     {
     return;
     }
-  vtkDataElement d = m->GetData().GetData(m);  
+  vtkDataElement d = m->GetData().GetData(m);
   vtkIdType numChildren = 1;
   if(d.IsValid())
     {
     numChildren = d.GetNumberOfChildren();
     }
-  
+
   this->Cache.resize(numChildren);
   if (this->Value.IsConstant())
     {
