@@ -28,9 +28,12 @@ SET(Kit_SRCS
   vtkContextMapper2D.cxx
   vtkContextScene.cxx
   vtkContextView.cxx
+  vtkDataElement.cxx
+  vtkDataValue.cxx
   vtkImageItem.cxx
   vtkLineMark.cxx
   vtkMark.cxx
+  vtkMarkUtil.cxx
   vtkOpenGLContextDevice2D.cxx
   vtkPanelMark.cxx
   vtkPen.cxx
@@ -45,9 +48,18 @@ SET_SOURCE_FILES_PROPERTIES(
   vtkContextDevice2D
   vtkContextItem
   vtkContextMapper2D
+  vtkDataValue
   vtkPlot
   ABSTRACT
-  ) 
+  )
+
+SET_SOURCE_FILES_PROPERTIES(
+  vtkDataElement
+  vtkDataValue
+  vtkMarkUtil
+  vtkValueHolder
+  WRAP_EXCLUDE
+)
 
 #-----------------------------------------------------------------------------
 # Include CMake code common to all kits.

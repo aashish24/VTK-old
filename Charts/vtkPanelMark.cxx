@@ -110,9 +110,11 @@ bool vtkPanelMark::Paint(vtkContext2D* painter)
     for (vtkIdType i = 0; i < numChildren; ++i)
       {
       this->Index = i;
-      painter->GetTransform()->Translate(left[i], bottom[i]);
+      painter->GetTransform()->Translate(left[i], bottom[i]);            
+      painter->SetTransform(painter->GetTransform());      
       this->MarkInstances[j*numChildren + i]->Paint(painter);
       painter->GetTransform()->Translate(-left[i], -bottom[i]);
+      painter->SetTransform(painter->GetTransform());
       }
     }
   return true;

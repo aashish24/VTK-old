@@ -1,31 +1,31 @@
-
 #include "vtkBarMark.h"
 #include "vtkContextScene.h"
 #include "vtkContextView.h"
 #include "vtkDoubleArray.h"
 #include "vtkLineMark.h"
+#include "vtkMarkUtil.h"
 #include "vtkPanelMark.h"
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
 #include "vtkTable.h"
 
-double PanelLeftFunction(vtkMark* m, vtkDataElement& d)
+double PanelLeftFunction(vtkMark* m, vtkDataElement& vtkNotUsed(d))
 {
   return 20 + m->GetIndex()*15;
 }
 
-vtkDataElement DataFunction(vtkMark* m, vtkDataElement& d)
+vtkDataElement DataFunction(vtkMark* vtkNotUsed(m), vtkDataElement& d)
 {
   return d;
 }
 
-double LeftFunction(vtkMark* m, vtkDataElement& d)
+double LeftFunction(vtkMark* m, vtkDataElement& vtkNotUsed(d))
 {
   return m->GetIndex()*50;
 }
 
-double HeightFunction(vtkMark* m, vtkDataElement& d)
+double HeightFunction(vtkMark* vtkNotUsed(m), vtkDataElement& d)
 {
   return d.GetValue().ToDouble()*200;
 }
