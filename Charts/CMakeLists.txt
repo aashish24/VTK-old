@@ -33,6 +33,7 @@ SET(Kit_SRCS
   vtkImageItem.cxx
   vtkLineMark.cxx
   vtkMark.cxx
+  vtkMarkUtil.cxx
   vtkOpenGLContextDevice2D.cxx
   vtkPanelMark.cxx
   vtkPen.cxx
@@ -55,6 +56,7 @@ SET_SOURCE_FILES_PROPERTIES(
 SET_SOURCE_FILES_PROPERTIES(
   vtkDataElement
   vtkDataValue
+  vtkMarkUtil
   vtkValueHolder
   WRAP_EXCLUDE
 )

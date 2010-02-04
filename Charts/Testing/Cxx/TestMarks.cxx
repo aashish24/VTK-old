@@ -3,6 +3,7 @@
 #include "vtkContextView.h"
 #include "vtkDoubleArray.h"
 #include "vtkLineMark.h"
+#include "vtkMarkUtil.h"
 #include "vtkPanelMark.h"
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"

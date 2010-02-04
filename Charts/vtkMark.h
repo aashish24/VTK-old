@@ -152,20 +152,4 @@ private:
 //ETX
 };
 
-
-//-----------------------------------------------------------------------------
-class VTK_CHARTS_EXPORT vtkMarkUtil
-{
-public:
-  static vtkColor DefaultSeriesColor(vtkMark* m, vtkDataElement&);
-  static double StackLeft(vtkMark* m, vtkDataElement&)
-  {
-    return m->GetCousinLeft() + m->GetCousinWidth();
-  }
-  static double StackBottom(vtkMark* m, vtkDataElement&)
-  {
-    return m->GetCousinBottom() + m->GetCousinHeight();
-  }
-};
-
 #endif //__vtkMark_h
