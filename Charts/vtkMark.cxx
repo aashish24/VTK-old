@@ -25,19 +25,7 @@
 
 #include "vtkBarMark.h"
 #include "vtkLineMark.h"
-#include "vtkValueHolderDef.h"
-
-//-----------------------------------------------------------------------------
-vtkColor vtkMarkUtil::DefaultSeriesColor(vtkMark* m, vtkDataElement&)
-{
-  unsigned char colors[10][3] = {{166, 206, 227}, {31, 120, 180}, {178, 223, 13}, {51, 160, 44}, {251, 154, 153}, {227, 26, 28}, {253, 191, 111}, {255, 127, 0}, {202, 178, 214}, {106, 61, 154}};
-  vtkIdType index = 0;
-  if (m->GetParent())
-    {
-    index = m->GetParent()->GetIndex() % 10;
-    }
-  return vtkColor(colors[index][0]/255.0, colors[index][1]/255.0, colors[index][2]/255.0);
-}
+#include "vtkValueHolder.txx"
 
 //-----------------------------------------------------------------------------
 vtkCxxRevisionMacro(vtkMark, "$Revision$");
