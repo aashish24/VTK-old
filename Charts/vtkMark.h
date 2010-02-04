@@ -27,63 +27,9 @@
 #include "vtkDataValue.h"
 #include "vtkSmartPointer.h"
 #include "vtkVariant.h"
+#include "vtkValueHolder.h"
 
-template <typename T>
-class vtkValueHolder
-{
-public:
-  vtkValueHolder() : Dirty(true), Set(false) { }
-
-  void UnsetValue()
-    { Set = false; }
-  void SetValue(vtkValue<T> v)
-    { Dirty = true; Set = true; Value = v; }
-  vtkValue<T>& GetValue()
-    { return Value; }
-
-  T* GetArray(vtkMark* m)
-    {
-    this->Update(m);
-    if (this->Cache.size() == 0)
-      {
-      return NULL;
-      }
-    return &(this->Cache[0]);
-    }
-
-  T GetConstant(vtkMark* m)
-    {
-    this->Update(m);
-    if (this->Cache.size() > 0)
-      {
-      return this->Cache[0];
-      }
-    return this->Value.GetConstant();
-    }
-
-  bool IsSet()
-    {
-    return this->Set;
-    }
-
-  bool IsDirty()
-    {
-    return this->Dirty;
-    }
-
-  void SetDirty(bool b)
-    {
-    this->Dirty = b;
-    }
-
-  void Update(vtkMark* m);
-
-protected:
-  vtkValue<T> Value;
-  std::vector<T> Cache;
-  bool Dirty;
-  bool Set;
-};
+class vtkPanelMark;
 
 class vtkColor
 {
@@ -118,82 +64,43 @@ public:
 
   virtual bool Paint(vtkContext2D* vtkNotUsed(painter)) { return true; }
 
-  virtual void Update()
-    {
-    this->Left.Update(this);
-    this->Right.Update(this);
-    this->Top.Update(this);
-    this->Bottom.Update(this);
-    this->Title.Update(this);
-    this->FillColor.Update(this);
-    this->LineColor.Update(this);
-    this->LineWidth.Update(this);
-    this->Width.Update(this);
-    this->Height.Update(this);
-    }
+  virtual void Update();
 
-  void SetData(vtkDataValue data)
-    {
-      this->Data = data;
-      this->DataChanged();
-    }
-  vtkDataValue GetData()
-    { return this->Data; }
+  void SetData(vtkDataValue data);
+  vtkDataValue GetData();
 
-  void SetLeft(vtkValue<double> v)
-    { this->Left.SetValue(v); }
-  vtkValue<double>& GetLeft()
-    { return this->Left.GetValue(); }
+  void SetLeft(vtkValue<double> v);
+  vtkValue<double>& GetLeft();
 
-  void SetRight(vtkValue<double> v)
-    { this->Right.SetValue(v); }
-  vtkValue<double>& GetRight()
-    { return this->Right.GetValue(); }
+  void SetRight(vtkValue<double> v);
+  vtkValue<double>& GetRight();
 
-  void SetTop(vtkValue<double> v)
-    { this->Top.SetValue(v); }
-  vtkValue<double>& GetTop()
-    { return this->Top.GetValue(); }
+  void SetTop(vtkValue<double> v);
+  vtkValue<double>& GetTop();
 
-  void SetBottom(vtkValue<double> v)
-    { this->Bottom.SetValue(v); }
-  vtkValue<double>& GetBottom()
-    { return this->Bottom.GetValue(); }
+  void SetBottom(vtkValue<double> v);
+  vtkValue<double>& GetBottom();
 
-  void SetTitle(vtkValue<std::string> v)
-    { this->Title.SetValue(v); }
-  vtkValue<std::string>& GetTitle()
-    { return this->Title.GetValue(); }
+  void SetTitle(vtkValue<std::string> v);
+  vtkValue<std::string>& GetTitle();
 
-  void SetLineColor(vtkValue<vtkColor> v)
-    { this->LineColor.SetValue(v); }
-  vtkValue<vtkColor>& GetLineColor()
-    { return this->LineColor.GetValue(); }
+  void SetLineColor(vtkValue<vtkColor> v);
+  vtkValue<vtkColor>& GetLineColor();
 
-  void SetFillColor(vtkValue<vtkColor> v)
-    { this->FillColor.SetValue(v); }
-  vtkValue<vtkColor>& GetFillColor()
-    { return this->FillColor.GetValue(); }
+  void SetFillColor(vtkValue<vtkColor> v);
+  vtkValue<vtkColor>& GetFillColor();
 
-  void SetLineWidth(vtkValue<double> v)
-    { this->LineWidth.SetValue(v); }
-  vtkValue<double>& GetLineWidth()
-    { return this->LineWidth.GetValue(); }
+  void SetLineWidth(vtkValue<double> v);
+  vtkValue<double>& GetLineWidth();
 
-  void SetWidth(vtkValue<double> v)
-    { this->Width.SetValue(v); }
-  vtkValue<double>& GetWidth()
-    { return this->Width.GetValue(); }
+  void SetWidth(vtkValue<double> v);
+  vtkValue<double>& GetWidth();
 
-  void SetHeight(vtkValue<double> v)
-    { this->Height.SetValue(v); }
-  vtkValue<double>& GetHeight()
-    { return this->Height.GetValue(); }
+  void SetHeight(vtkValue<double> v);
+  vtkValue<double>& GetHeight();
 
-  void SetParent(vtkPanelMark* p)
-    { this->Parent = p; }
-  vtkPanelMark* GetParent()
-    { return this->Parent; }
+  void SetParent(vtkPanelMark* p);
+  vtkPanelMark* GetParent();
 
   vtkSetMacro(ParentMarkIndex, int);
   vtkGetMacro(ParentMarkIndex, int);
@@ -201,10 +108,8 @@ public:
   vtkSetMacro(ParentDataIndex, int);
   vtkGetMacro(ParentDataIndex, int);
 
-  void SetIndex(vtkIdType i)
-    { this->Index = i; }
-  vtkIdType GetIndex()
-    { return this->Index; }
+  void SetIndex(vtkIdType i);
+  vtkIdType GetIndex();
 
   double GetCousinLeft();
   double GetCousinRight();
@@ -213,21 +118,8 @@ public:
   double GetCousinWidth();
   double GetCousinHeight();
 
-  virtual void DataChanged()
-    {
-    this->Left.SetDirty(true);
-    this->Right.SetDirty(true);
-    this->Top.SetDirty(true);
-    this->Bottom.SetDirty(true);
-    this->Title.SetDirty(true);
-    this->FillColor.SetDirty(true);
-    this->LineColor.SetDirty(true);
-    this->LineWidth.SetDirty(true);
-    this->Width.SetDirty(true);
-    this->Height.SetDirty(true);
-    }
-
-  virtual int GetType() { return BAR; }
+  virtual void DataChanged();
+  virtual int GetType();
 
 //BTX
 protected:
@@ -260,40 +152,6 @@ private:
 //ETX
 };
 
-//-----------------------------------------------------------------------------
-template <typename T>
-void vtkValueHolder<T>::Update(vtkMark* m)
-{
-  if (!this->Dirty)
-    {
-    return;
-    }
-  vtkDataElement d = m->GetData().GetData(m);
-  vtkIdType numChildren = 1;
-  if(d.IsValid())
-    {
-    numChildren = d.GetNumberOfChildren();
-    }
-
-  this->Cache.resize(numChildren);
-  if (this->Value.IsConstant())
-    {
-    for (vtkIdType i = 0; i < numChildren; ++i)
-      {
-      this->Cache[i] = this->Value.GetConstant();
-      }
-    }
-  else
-    {
-    for (vtkIdType i = 0; i < numChildren; ++i)
-      {
-      m->SetIndex(i);
-      vtkDataElement e = d.GetChild(i);
-      this->Cache[i] = this->Value.GetFunction()(m, e);
-      }
-    }
-  this->Dirty = false;
-}
 
 //-----------------------------------------------------------------------------
 class VTK_CHARTS_EXPORT vtkMarkUtil

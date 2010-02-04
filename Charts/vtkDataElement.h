@@ -26,8 +26,6 @@
 
 // Forware declarations.
 class vtkAbstractArray;
-class vtkMark;
-class vtkPanelMark;
 class vtkTable;
 
 class VTK_CHARTS_EXPORT vtkDataElement

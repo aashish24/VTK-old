@@ -25,24 +25,7 @@
 
 #include "vtkBarMark.h"
 #include "vtkLineMark.h"
-
-//-----------------------------------------------------------------------------
-bool vtkDataElement::IsValid()
-{
-  return this->Valid;
-}
-
-//-----------------------------------------------------------------------------
-vtkDataElement vtkDataValue::GetData(vtkMark* m)
-{
-  if (this->Function)
-    {
-    vtkMark* p = m->GetParent();
-    vtkDataElement d = p->GetData().GetData(p).GetChild(p->GetIndex());
-    return this->Function(m, d);
-    }
-  return this->Constant;
-}
+#include "vtkValueHolderDef.h"
 
 //-----------------------------------------------------------------------------
 vtkColor vtkMarkUtil::DefaultSeriesColor(vtkMark* m, vtkDataElement&)
@@ -104,6 +87,121 @@ void vtkMark::Extend(vtkMark* m)
   this->LineWidth.SetValue(m->GetLineWidth());
   this->Width.SetValue(m->GetWidth());
   this->Height.SetValue(m->GetHeight());
+}
+
+//-----------------------------------------------------------------------------
+void vtkMark::Update()
+  {
+  this->Left.Update(this);
+  this->Right.Update(this);
+  this->Top.Update(this);
+  this->Bottom.Update(this);
+  this->Title.Update(this);
+  this->FillColor.Update(this);
+  this->LineColor.Update(this);
+  this->LineWidth.Update(this);
+  this->Width.Update(this);
+  this->Height.Update(this);
+  }
+
+void vtkMark::SetData(vtkDataValue data)
+  {
+    this->Data = data;
+    this->DataChanged();
+  }
+
+vtkDataValue vtkMark::GetData()
+  { return this->Data; }
+
+void vtkMark::SetLeft(vtkValue<double> v)
+  { this->Left.SetValue(v); }
+
+
+vtkValue<double>& vtkMark::GetLeft()
+  { return this->Left.GetValue(); }
+
+void vtkMark::SetRight(vtkValue<double> v)
+  { this->Right.SetValue(v); }
+
+vtkValue<double>& vtkMark::GetRight()
+  { return this->Right.GetValue(); }
+
+void vtkMark::SetTop(vtkValue<double> v)
+  { this->Top.SetValue(v); }
+
+vtkValue<double>& vtkMark::GetTop()
+  { return this->Top.GetValue(); }
+
+void vtkMark::SetBottom(vtkValue<double> v)
+  { this->Bottom.SetValue(v); }
+
+vtkValue<double>& vtkMark::GetBottom()
+  { return this->Bottom.GetValue(); }
+
+void vtkMark::SetTitle(vtkValue<std::string> v)
+  { this->Title.SetValue(v); }
+
+vtkValue<std::string>& vtkMark::GetTitle()
+  { return this->Title.GetValue(); }
+
+void vtkMark::SetLineColor(vtkValue<vtkColor> v)
+  { this->LineColor.SetValue(v); }
+
+vtkValue<vtkColor>& vtkMark::GetLineColor()
+  { return this->LineColor.GetValue(); }
+
+void vtkMark::SetFillColor(vtkValue<vtkColor> v)
+  { this->FillColor.SetValue(v); }
+
+vtkValue<vtkColor>& vtkMark::GetFillColor()
+  { return this->FillColor.GetValue(); }
+
+void vtkMark::SetLineWidth(vtkValue<double> v)
+  { this->LineWidth.SetValue(v); }
+
+vtkValue<double>& vtkMark::GetLineWidth()
+  { return this->LineWidth.GetValue(); }
+
+void vtkMark::SetWidth(vtkValue<double> v)
+  { this->Width.SetValue(v); }
+
+vtkValue<double>& vtkMark::GetWidth()
+  { return this->Width.GetValue(); }
+
+void vtkMark::SetHeight(vtkValue<double> v)
+  { this->Height.SetValue(v); }
+vtkValue<double>& vtkMark::GetHeight()
+  { return this->Height.GetValue(); }
+
+void vtkMark::SetParent(vtkPanelMark* p)
+  { this->Parent = p; }
+
+vtkPanelMark* vtkMark::GetParent()
+  { return this->Parent; }
+
+void vtkMark::SetIndex(vtkIdType i)
+  { this->Index = i; }
+
+vtkIdType vtkMark::GetIndex()
+  { return this->Index; }
+
+void vtkMark::DataChanged()
+  {
+  this->Left.SetDirty(true);
+  this->Right.SetDirty(true);
+  this->Top.SetDirty(true);
+  this->Bottom.SetDirty(true);
+  this->Title.SetDirty(true);
+  this->FillColor.SetDirty(true);
+  this->LineColor.SetDirty(true);
+  this->LineWidth.SetDirty(true);
+  this->Width.SetDirty(true);
+  this->Height.SetDirty(true);
+  }
+
+int vtkMark::GetType()
+{
+  return BAR;
 }
 
 double vtkMark::GetCousinLeft()

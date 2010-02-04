@@ -114,3 +114,9 @@ vtkVariant vtkDataElement::GetValue(std::string str)
     }
   return vtkVariant();
 }
+
+//-----------------------------------------------------------------------------
+bool vtkDataElement::IsValid()
+{
+  return this->Valid;
+}
