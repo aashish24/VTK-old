@@ -1,4 +1,3 @@
-
 #include "vtkBarMark.h"
 #include "vtkContextScene.h"
 #include "vtkContextView.h"
