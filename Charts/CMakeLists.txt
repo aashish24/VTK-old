@@ -56,6 +56,7 @@ SET_SOURCE_FILES_PROPERTIES(
 SET_SOURCE_FILES_PROPERTIES(
   vtkDataElement
   vtkDataValue
+  vtkMark
   vtkMarkUtil
   vtkValueHolder
   WRAP_EXCLUDE
