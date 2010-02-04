@@ -353,8 +353,17 @@ void vtkProp3D::SetUserMatrix(vtkMatrix4x4 *matrix)
 //----------------------------------------------------------------------------
 void vtkProp3D::GetMatrix(vtkMatrix4x4 *result)
 {
-  this->GetMatrix(&result->Element[0][0]);
-  result->Modified();
+  double mine[16];
+  this->GetMatrix(mine);
+  for (int i =0; i < 16; i++)
+    {
+    if (mine[i] != *(&result->Element[0][0]+i))
+      {
+      memcpy(&result->Element[0][0], mine, 16*sizeof(double));
+      result->Modified();
+      return;
+      }
+    }
 }
 
 //----------------------------------------------------------------------------
