@@ -18,6 +18,74 @@
 #include "vtkTable.h"
 #include "vtkAbstractArray.h"
 
+//------------------------------------------------------------------------------
+vtkDataElement::vtkDataElement() :
+  Type(SCALAR),
+  Dimension(0),
+  Valid(false),
+  Table(NULL),
+  AbstractArray(NULL),
+  Index(-1)
+{
+}
+
+//------------------------------------------------------------------------------
+vtkDataElement::vtkDataElement(vtkVariant v) :
+  Type(SCALAR),
+  Dimension(0),
+  Valid(true),
+  Scalar(v),
+  Table(NULL),
+  AbstractArray(NULL),
+  Index(-1)
+{
+}
+
+//------------------------------------------------------------------------------
+vtkDataElement::vtkDataElement(vtkTable* table) :
+  Type(TABLE),
+  Dimension(0),
+  Valid(true),
+  Table(table),
+  AbstractArray(NULL),
+  Index(-1)
+{
+}
+
+//------------------------------------------------------------------------------
+vtkDataElement::vtkDataElement(vtkTable* table, vtkIdType row) :
+  Type(TABLE_ROW),
+  Dimension(0),
+  Valid(true),
+  Table(table),
+  AbstractArray(NULL),
+  Index(row)
+{
+}
+
+//------------------------------------------------------------------------------
+vtkDataElement::vtkDataElement(vtkAbstractArray* arr) :
+  Type(ABSTRACT_ARRAY),
+  Dimension(0),
+  Valid(true),
+  Table(NULL),
+  AbstractArray(arr),
+  Index(-1)
+{
+}
+
+//------------------------------------------------------------------------------
+vtkDataElement::vtkDataElement(vtkAbstractArray* arr, vtkIdType index,
+                               int type) :
+  Type(type),
+  Dimension(0),
+  Valid(true),
+  Table(NULL),
+  AbstractArray(arr),
+  Index(index)
+{
+}
+
 //-----------------------------------------------------------------------------
 vtkIdType vtkDataElement::GetNumberOfChildren()
 {

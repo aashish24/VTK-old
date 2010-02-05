@@ -14,7 +14,7 @@
 =========================================================================*/
 
 // .NAME vtkDataElement - Class to hold the data (table, array or scalar)
-// and profide uniform way of accessing the data.
+// and provide uniform way of accessing the data.
 //
 // .SECTION Description
 //
@@ -31,23 +31,12 @@ class vtkTable;
 class VTK_CHARTS_EXPORT vtkDataElement
 {
 public:
-  vtkDataElement() :
-    Type(SCALAR), Dimension(0), Valid(false), Table(NULL), AbstractArray(NULL), Index(-1){ }
-
-  vtkDataElement(vtkVariant v) :
-    Type(SCALAR), Dimension(0), Valid(true), Scalar(v), Table(NULL), AbstractArray(NULL), Index(-1)  { }
-
-  vtkDataElement(vtkTable* table) :
-    Type(TABLE), Dimension(0), Valid(true), Table(table), AbstractArray(NULL), Index(-1)  { }
-
-  vtkDataElement(vtkTable* table, vtkIdType row) :
-    Type(TABLE_ROW), Dimension(0), Valid(true), Table(table), AbstractArray(NULL), Index(row) { }
-
-  vtkDataElement(vtkAbstractArray* arr) :
-    Type(ABSTRACT_ARRAY), Dimension(0), Valid(true), Table(NULL), AbstractArray(arr), Index(-1) { }
-
-  vtkDataElement(vtkAbstractArray* arr, vtkIdType index, int type) :
-    Type(type), Dimension(0), Valid(true), Table(NULL), AbstractArray(arr), Index(index) { }
+  vtkDataElement();
+  vtkDataElement(vtkVariant v);
+  vtkDataElement(vtkTable* table);
+  vtkDataElement(vtkTable* table, vtkIdType row);
+  vtkDataElement(vtkAbstractArray* arr);
+  vtkDataElement(vtkAbstractArray* arr, vtkIdType index, int type);
 
   enum {
     INVALID,
@@ -59,13 +48,11 @@ public:
     SCALAR
     };
 
-  void SetDimension(int dim)
-    {
-    this->Dimension = dim;
-    }
+  void SetDimension(int dim){this->Dimension = dim;}
 
   vtkIdType GetNumberOfChildren();
   vtkDataElement GetChild(vtkIdType i);
+
   vtkVariant GetValue(vtkIdType i = 0);
   vtkVariant GetValue(std::string str);
   bool IsValid();

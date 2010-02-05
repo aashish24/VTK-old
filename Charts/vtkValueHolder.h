@@ -23,7 +23,7 @@
 
 #include "vtkDataValue.h"
 
-// Forware declarations.
+// Forward declarations.
 class vtkMark;
 
 template <typename T>
@@ -32,12 +32,9 @@ class vtkValueHolder
 public:
   vtkValueHolder() : Dirty(true), Set(false) { }
 
-  void UnsetValue()
-    { Set = false; }
-  void SetValue(vtkValue<T> v)
-    { Dirty = true; Set = true; Value = v; }
-  vtkValue<T>& GetValue()
-    { return Value; }
+  void UnsetValue(){Set = false;}
+  void SetValue(vtkValue<T> v){Dirty = true; Set = true; Value = v;}
+  vtkValue<T>& GetValue(){return Value;}
 
   T* GetArray(vtkMark* m)
     {
@@ -59,26 +56,16 @@ public:
     return this->Value.GetConstant();
     }
 
-  bool IsSet()
-    {
-    return this->Set;
-    }
+  bool IsSet(){return this->Set;}
 
-  bool IsDirty()
-    {
-    return this->Dirty;
-    }
-
-  void SetDirty(bool b)
-    {
-    this->Dirty = b;
-    }
+  bool IsDirty(){return this->Dirty;}
+  void SetDirty(bool b){this->Dirty = b;}
 
   void Update(vtkMark* m);
 
 protected:
   vtkValue<T> Value;
-  std::vector<T> Cache;
+  vtkstd::vector<T> Cache; // STL required.
   bool Dirty;
   bool Set;
 };
