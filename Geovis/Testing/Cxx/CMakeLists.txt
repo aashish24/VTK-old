@@ -14,6 +14,7 @@ IF (VTK_USE_DISPLAY)
       TestGeoView2D.cxx
       #TestGeoView2DPopulation.cxx
       TestGeoView.cxx
+      TestGeoViewParaview.cxx
       TestLabeledGeoView2D.cxx
       )
   ENDIF (VTK_DATA_ROOT)
