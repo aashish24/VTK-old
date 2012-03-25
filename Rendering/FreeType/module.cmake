@@ -4,7 +4,7 @@ vtk_module(vtkRenderingFreeType
   DEPENDS
     vtkRenderingCore
     vtkfreetype
-    vtkftgl
+    #vtkftgl
   TEST_DEPENDS
     vtkTestingRendering
     vtkViewsContext2D

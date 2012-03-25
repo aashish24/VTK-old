@@ -1,10 +1,10 @@
 set(Module_SRCS
   vtkFreeTypeStringToImage.cxx
-  vtkFreeTypeUtilities.cxx
+  #vtkFreeTypeUtilities.cxx
   vtkFreeTypeTools.cxx
-  vtkTextActor3D.cxx
-  vtkTextActor.cxx
-  vtkScaledTextActor.cxx
+  #vtkTextActor3D.cxx
+  #vtkTextActor.cxx
+  #vtkScaledTextActor.cxx
   vtkVectorText.cxx
 
   fonts/face_arial_bold.cxx
