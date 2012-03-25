@@ -5,7 +5,7 @@ SET(Module_SRCS
   #vtkCGMWriter.cxx # Needs vtkViewport.
   vtkChacoReader.cxx
   vtkFacetWriter.cxx
-  vtkFLUENTReader.cxx
+  #vtkFLUENTReader.cxx
   vtkGAMBITReader.cxx
   vtkGaussianCubeReader.cxx
   vtkIVWriter.cxx
