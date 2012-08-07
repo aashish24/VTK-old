@@ -95,9 +95,11 @@ typedef int siginfo_t;
 # include <sys/socket.h>
 # include <netdb.h>
 # include <sys/types.h>
+#if !defined(ANDROID)
 # include <ifaddrs.h>
+#endif
 # include <netinet/in.h>
-#if defined(__GNUG__)
+#if defined(__GNUG__) && !defined(ANDROID)
 #include <execinfo.h>
 #endif
 #elif defined( __hpux )
@@ -894,7 +896,7 @@ void StacktraceSignalHandler(
     }
   kwsys_ios::cerr << kwsys_ios::endl;
 
-#if defined(__GNUG__)
+#if defined(__GNUG__) && !defined(ANDROID)
   kwsys_ios::cerr << "Stack:" << kwsys_ios::endl;
   void *stack[128];
   int n=backtrace(stack,128);
@@ -1079,6 +1081,8 @@ int SystemInformationImplementation::GetFullyQualifiedDomainName(
   return -1;
 
 #elif defined(_AIX)
+  return -1;
+#elif defined(ANDROID)
   return -1;
 #else
   // gethostname typical returns an alias for loopback interface
