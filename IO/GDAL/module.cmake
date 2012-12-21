@@ -6,4 +6,6 @@ vtk_module(vtkIOGDAL
     vtkCommonExecutionModel
   TEST_DEPENDS
     vtkTestingCore
+    vtkRenderingOpenGL
+    vtkTestingRendering
 )

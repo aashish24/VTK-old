@@ -14,6 +14,7 @@
 =========================================================================*/
 #include "vtkGDALVectorReader.h"
 
+// VTK includes
 #include <vtkCellData.h>
 #include <vtkCellType.h>
 #include <vtkDoubleArray.h>
@@ -26,6 +27,7 @@
 #include <vtkStringArray.h>
 #include <vtkPolyData.h>
 
+// GDAL OGR includes
 #include <ogrsf_frmts.h>
 
 // C++ includes
