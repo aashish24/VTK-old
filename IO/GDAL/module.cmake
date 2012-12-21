@@ -1,0 +1,9 @@
+vtk_module(vtkIOGDAL
+  GROUPS
+    StandAlone
+  DEPENDS
+    vtkCommonDataModel
+    vtkCommonExecutionModel
+  TEST_DEPENDS
+    vtkTestingCore
+)
