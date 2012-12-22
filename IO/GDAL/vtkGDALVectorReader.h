@@ -53,11 +53,11 @@ public:
 
   // Description:
   // Return the active layer type (eg point, line, polygon).
-  int GetActiveLayerType( ){return GetLayerType(ActiveLayer);}
+  int GetActiveLayerType( ){return this->GetLayerType(ActiveLayer);}
 
   // Description:
   // Return the number of features in the active layer (shapes).
-  int GetActiveLayerFeatureCount( ){return GetFeatureCount(ActiveLayer);}
+  int GetActiveLayerFeatureCount( ){return this->GetFeatureCount(ActiveLayer);}
 
   // Description:
   // Set and Get the active layer
@@ -73,12 +73,14 @@ public:
   vtkGetMacro(AppendFeatures, int);
   vtkBooleanMacro(AppendFeatures, int);
 
+//BTX
   // Description:
   // Return projection string belong to each layer.
   std::map<int, std::string> GetLayersProjection()
     {
     return this->LayersProjection;
     }
+//ETX
 
 protected:
   vtkGDALVectorReader();
