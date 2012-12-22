@@ -53,11 +53,11 @@ public:
 
   // Description:
   // Return the active layer type (eg point, line, polygon).
-  int GetActiveLayerType( ){return this->GetLayerType(ActiveLayer);}
+  int GetActiveLayerType();
 
   // Description:
   // Return the number of features in the active layer (shapes).
-  int GetActiveLayerFeatureCount( ){return this->GetFeatureCount(ActiveLayer);}
+  int GetActiveLayerFeatureCount();
 
   // Description:
   // Set and Get the active layer
@@ -73,14 +73,11 @@ public:
   vtkGetMacro(AppendFeatures, int);
   vtkBooleanMacro(AppendFeatures, int);
 
-//BTX
+  //BTX
   // Description:
   // Return projection string belong to each layer.
-  std::map<int, std::string> GetLayersProjection()
-    {
-    return this->LayersProjection;
-    }
-//ETX
+  std::map<int, std::string> GetLayersProjection();
+  //ETX
 
   // Description:
   // Return projection string belong to a layer.
@@ -105,7 +102,7 @@ protected:
   class Internal;
 
   /// Private per-file metadata
-  vtkGDALVectorReader::Internal* P;
+  vtkGDALVectorReader::Internal* Implementation;
 
   /// Global variable indicating whether the OGR library has been registered yet or not.
   static int OGRRegistered;
