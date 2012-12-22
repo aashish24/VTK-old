@@ -37,13 +37,10 @@
 #include <sstream>
 
 // Main program
-#include <vtkCellData.h>
 int TestGDALVectorReader(int argc, char** argv)
 {
   const char* vectorFileName = vtkTestUtilities::ExpandDataFileName(argc, argv,
                                  "Data/GIS/countries.shp");
-
-  std::cerr << "vectorFileName " << vectorFileName << std::endl;
 
   // Create reader to read shape file.
   vtkNew<vtkGDALVectorReader> reader;

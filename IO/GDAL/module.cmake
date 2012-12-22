@@ -1,6 +1,4 @@
 vtk_module(vtkIOGDAL
-  GROUPS
-    StandAlone
   DEPENDS
     vtkCommonDataModel
     vtkCommonExecutionModel
