@@ -497,3 +497,23 @@ int vtkGDALVectorReader::GetFeatureCount(int layerIndex)
 
   return layer->GetFeatureCount();
 }
+
+// -----------------------------------------------------------------------------
+const char *vtkGDALVectorReader::GetLayerProjection(int layerIndex)
+{
+  if (layerIndex < 0)
+    {
+    vtkErrorMacro( << "Layer index cannot be negative");
+    }
+
+  std::map<int, std::string>::const_iterator itr =
+    this->LayersProjection.find(layerIndex);
+  if (itr != this->LayersProjection.end())
+    {
+    return itr->second.c_str();
+    }
+  else
+    {
+    return NULL;
+    }
+}

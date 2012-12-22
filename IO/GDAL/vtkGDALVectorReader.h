@@ -82,6 +82,10 @@ public:
     }
 //ETX
 
+  // Description:
+  // Return projection string belong to a layer.
+  const char* GetLayerProjection(int layerIndex);
+
 protected:
   vtkGDALVectorReader();
   virtual ~vtkGDALVectorReader();
@@ -109,6 +113,10 @@ protected:
   /// Mapping of layer to projection.
   std::map<int, std::string> LayersProjection;
   //ETX
+
+private:
+  vtkGDALVectorReader(const vtkGDALVectorReader&);  // Not implemented.
+  void operator=(const vtkGDALVectorReader&);       // Not implemented.
 };
 
 #endif // __vtkGDALVectorReader_h
